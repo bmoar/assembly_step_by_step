@@ -3,18 +3,28 @@
 ; Description: put instructions in
 
 SECTION .data ; init data
-    snip db "kangaroo"
+    ; data that has a value before the program starts running
+    snip db "KANGAROO"
+    sniplen equ 16
 
-SECTION .bss ; unit data
+SECTION .bss ; uninit data
+    ; data buffers, basically pointers to memory to later
+    ; be filled up by things like disk / network IO
 
 SECTION .text ; code section
+    ; where symbols and instructions go
 global_start: ; linker needs to find entry point
 
-_start:
+_start: ; label required by linux
     nop
 
-    mov eax,1
-    mov ebx,0
-    div ebx
+    mov rax,0xDEADBEEF
+    push rax
+    mov ebx,1
+    mov ecx,snip
+    mov edx,sniplen
+
+    int 0x80
 
     nop
+
