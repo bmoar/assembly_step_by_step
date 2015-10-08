@@ -19,7 +19,7 @@ read:
     int 0x80
 
     cmp rax,0 ; cmp rax against EOF
-    je exit ; if EOF, exit
+    jle exit ; if EOF, exit
 
     cmp byte [buff],0x61 ; check buff for a
     jb write ; jmp if byte < 'a'
