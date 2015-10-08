@@ -19,7 +19,10 @@ read:
     int 0x80
 
     cmp rax,0 ; cmp rax against EOF
-    jle exit ; if EOF, exit
+    je exit ; if EOF, exit
+
+    cmp rax,0 ; check for errors
+    jl error ; we error now
 
     cmp byte [buff],0x61 ; check buff for a
     jb write ; jmp if byte < 'a'
@@ -36,9 +39,14 @@ write:
     int 0x80
 
     cmp rax,1 ; check to make sure we wrote 1 byte
-    jne exit ; if 1 byte not written, error, exit
+    jne error ; if 1 byte not written, error, exit
 
     jmp read ; loop until EOF
+
+error:
+    mov rax,0x1 ; sys_exit
+    mov rbx,0x1 ; we error now
+    int 0x80
 
 exit:
     mov rax,0x1 ; sys_exit
