@@ -34,6 +34,10 @@ write:
     mov rcx,buff ; write from *buf
     mov rdx,0x1 ; write 1 byte
     int 0x80
+
+    cmp rax,1 ; check to make sure we wrote 1 byte
+    jne exit ; if 1 byte not written, error, exit
+
     jmp read ; loop until EOF
 
 exit:
