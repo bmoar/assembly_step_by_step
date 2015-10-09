@@ -1,7 +1,8 @@
 ; reads from stdin 1 byte at a time and uppercases it if lowercase ascii, then write byte to stdout
 
 section .bss
-    buff resb 1
+    bufflen equ 4096
+    buff resb bufflen
 
 section .data
 
@@ -15,8 +16,9 @@ read:
     mov rax,0x3 ; use sys_read
     mov rbx,0x0 ; read from stdin
     mov rcx,buff ; store in *buff
-    mov rdx,0x1 ; read 1 byte
+    mov rdx,bufflen ; read bufflen bytes
     int 0x80
+    mov rsi,rax ; store return of sys_read
 
     cmp rax,0 ; cmp rax against EOF
     je exit ; if EOF, exit
@@ -24,22 +26,31 @@ read:
     cmp rax,0 ; check for errors
     jl error ; we error now
 
-    cmp byte [buff],0x61 ; check buff for a
-    jb write ; jmp if byte < 'a'
-    cmp byte [buff],0x7a ; check buff for z
-    ja write ; jmp if byte > 'z'
-    sub byte [buff],0x20 ; otherwise byte is lowercase char, uppercase by sub 0x20
-    jmp write ; write uppercased byte
+    ; set up registers for scan
+    mov rcx,rsi ; get # bytes read
+    mov rbp,buff ; get offset of buff
+    dec rbp ; make rcx a count and offset to remove off-by-one errors by dec offset of buff by 1
+
+scan:
+    cmp byte [rbp+rcx],0x61 ; check buff for a
+    jb next ; jmp if byte < 'a'
+    cmp byte [rbp+rcx],0x7a ; check buff for z
+    ja next ; jmp if byte > 'z'
+    sub byte [rbp+rcx],0x20 ; otherwise byte is lowercase char, uppercase by sub 0x20
+
+next:
+    dec rcx
+    jnz scan
 
 write:
     mov rax,0x4 ; use sys_write
     mov rbx,0x1 ; write to stdout
     mov rcx,buff ; write from *buf
-    mov rdx,0x1 ; write 1 byte
+    mov rdx,rsi ; write bufflen byte
     int 0x80
 
-    cmp rax,1 ; check to make sure we wrote 1 byte
-    jne error ; if 1 byte not written, error, exit
+    cmp rax,bufflen ; check to make sure we wrote bytes
+    jne error ; if bufflen bytes not written, error, exit
 
     jmp read ; loop until EOF
 
