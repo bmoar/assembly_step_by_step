@@ -1,4 +1,4 @@
-; reads from stdin 1 byte at a time and uppercases it if lowercase ascii, then write byte to stdout
+; a simple text filter to uppercase ascii input
 
 section .bss
     bufflen equ 4096
