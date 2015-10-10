@@ -6,9 +6,11 @@ section .bss
 
 section .data
     hexstr: db " 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",10
+    ; hexstr is a table with entries 3 bytes long, \s[0-9a-f][0-9a-f]
     hexlen equ $-hexstr
 
-    digits: db "0123456789ABCDEF"
+    digits: db "0123456789ABCDEF" ; simple lookup table, index into it
+    ; by doing byte [digits+<val>]
 
 section .text
 
@@ -50,7 +52,8 @@ scan:
 
     ; look up low nybble char and insert it into str
     and al,0x0f ; mask out all but low nybble
-    mov al,byte [digits+rax]
+    mov al,byte [digits+rax] ; must use rax or eax in memory reference because al cannot be
+    ; used in effective addr calculations
     mov byte [hexstr+rdx+2],al ; write lsb char digit to line str
 
     ; look up high nybble char and insert it into str
