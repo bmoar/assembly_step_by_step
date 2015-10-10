@@ -28,15 +28,13 @@ read:
 
     ; set up registers for scan
     mov rcx,rsi ; get # bytes read
-    mov rbp,buff ; get offset of buff
-    dec rbp ; make rcx a count and offset to remove off-by-one errors by dec offset of buff by 1
 
 scan:
-    cmp byte [rbp+rcx],0x61 ; check buff for a
+    cmp byte [buff-1+rcx],0x61 ; check buff for a
     jb next ; jmp if byte < 'a'
-    cmp byte [rbp+rcx],0x7a ; check buff for z
+    cmp byte [buff-1+rcx],0x7a ; check buff for z
     ja next ; jmp if byte > 'z'
-    sub byte [rbp+rcx],0x20 ; otherwise byte is lowercase char, uppercase by sub 0x20
+    sub byte [buff-1+rcx],0x20 ; otherwise byte is lowercase char, uppercase by sub 0x20
 
 next:
     dec rcx
