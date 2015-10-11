@@ -1,4 +1,4 @@
-all: skelly uppercaser hexdump1
+all: skelly uppercaser hexdump
 
 skelly: skelly.o
 	ld -o skelly skelly.o
@@ -12,16 +12,16 @@ skelly.o:
 uppercaser.o:
 	nasm -f elf64 -g -F stabs uppercaser.asm
 
-hexdump1.o:
-	nasm -f elf64 -g -F stabs hexdump1.asm
+hexdump.o:
+	nasm -f elf64 -g -F stabs hexdump.asm
 
-hexdump1: hexdump1.o
-	ld -o hexdump1 hexdump1.o
+hexdump: hexdump.o
+	ld -o hexdump hexdump.o
 
 clean:
 	rm -f skelly
 	rm -f skelly.o
 	rm -f uppercaser
 	rm -f uppercaser.o
-	rm -f hexdump1
-	rm -f hexdump1.o
+	rm -f hexdump
+	rm -f hexdump.o
