@@ -43,8 +43,7 @@ scan:
 
     ; calculate the offset into hexstr, value of rcx * 3
     mov rdx,rcx ; copy char counter into rdx
-    shl rdx,1 ; multiply pointer by 2 using left shift
-    add rdx,rcx ; complete * 3
+    lea rdx,[rdx*2+rdx] ; multiply rdx by 3
 
     ; get char from buffer and put it in rax and rbx
     mov al,byte [rsi+rcx] ; put byte from input buffer into al
