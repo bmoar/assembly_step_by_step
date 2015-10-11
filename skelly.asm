@@ -13,18 +13,31 @@ SECTION .bss ; uninit data
 
 SECTION .text ; code section
     ; where symbols and instructions go
-global_start: ; linker needs to find entry point
+
+func0:
+    mov rax,0xDEAD
+    mov rbx,0xDEAD
+    ret
+
+func1:
+    mov rax,0xBEEF
+    mov rbx,0xBEEF
+    ret
+
+global _start: ; linker needs to find entry point
 
 _start: ; label required by linux
     nop
+    nop
+    nop
 
-    mov rax,0xDEADBEEF
-    push rax
-    mov ebx,1
-    mov ecx,snip
-    mov edx,sniplen
+    mov rax,0xff
+    mov rbx,0xff
+    mov rcx,0xff
+    mov rdx,0xff
 
-    int 0x80
+    call func0
+    call func1
 
     nop
 
