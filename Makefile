@@ -12,11 +12,14 @@ uppercaser: uppercaser.o
 uppercaser.o:
 	nasm -f elf64 -g -F stabs uppercaser.asm
 
-hexdump: hexdump.o
-	ld -o hexdump hexdump.o
+hexdump: hexdump.o textlib.o
+	ld -o hexdump hexdump.o lib/textlib.o
 
 hexdump.o:
 	nasm -f elf64 -g -F stabs hexdump.asm
+
+textlib.o:
+	nasm -f elf64 -g -F stabs lib/textlib.asm
 
 xlat: xlat.o
 	ld -o xlat xlat.o
@@ -33,3 +36,4 @@ clean:
 	rm -f hexdump.o
 	rm -f xlat
 	rm -f xlat.o
+	rm -f lib/textlib.o
